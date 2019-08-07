@@ -18,12 +18,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			ui.message('There is no text here.')
 			return
 
-		data = Client.checkWord(word)
-		if 0 == len(data):
+		errors = Client.checkWord(word)
+		if errors is None:
+			ui.message('There is an error in making request.')
+			return
+		if 0 == len(errors):
 			ui.message('All right.')
 			return
 
-		for words in data:
+		for words in errors:
 			self.showDialog(word, words['s'])
 
 	def showDialog(self, word, variants):

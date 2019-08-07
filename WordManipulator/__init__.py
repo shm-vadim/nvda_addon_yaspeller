@@ -1,21 +1,20 @@
-import api
+import api, textInfos
 from logHandler import log
 
 
 class WordManipulator:
 	@staticmethod
 	def getCurrentWord():
-		text = WordManipulator.getCurrentText()
-		if text is None:
-			return None
+		object = api.getCaretObject()
+		textInfo = object.makeTextInfo(textInfos.POSITION_CARET)
+		textInfo.expand(textInfos.UNIT_WORD)
+		text = textInfo.text
 		log.info(text)
 		return text
 
 	@staticmethod
 	def replaceWord(before, after):
-		log.info('Before: {before}, after: {after}'.format(before=before, after=after))
-
-	@staticmethod
-	def getCurrentText():
-		log.info(api.getFocusObject().TextInfo())
-		return api.getFocusObject().value
+		log.info(
+			'Before: {before}, after: {after}'
+				.format(before=before.encode('utf8'), after=after.encode('utf8'))
+		)
