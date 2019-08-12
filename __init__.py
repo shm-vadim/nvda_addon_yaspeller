@@ -7,13 +7,14 @@ from scriptHandler import script
 from Client import Client
 import wx, gui, ui
 from Dialog.ChangeWordDialog import ChangeWordDialog
-from WordManipulator import WordManipulator
+from WordManipulator import Editor
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	@script(gesture="kb:alt+w")
 	def script_checkWord(self, obj):
-		word = WordManipulator.getCurrentWord()
+		editor=Editor()
+		word = editor.getCurrentWord()
 		if word is None:
 			ui.message('There is no text here.')
 			return
@@ -22,14 +23,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		if errors is None:
 			ui.message('There is an error in making request.')
 			return
+
 		if 0 == len(errors):
 			ui.message('All right.')
 			return
 
 		for words in errors:
-			self.showDialog(word, words['s'])
+			self.showDialog(word, words['s'], editor)
 
-	def showDialog(self, word, variants):
+	def showDialog(self, word, variants, editor):
 		def onChoose(after):
-			WordManipulator.replaceWord(word, after)
+			editor.replaceWord(word, after)
 		gui.mainFrame._popupSettingsDialog(ChangeWordDialog, words=variants, onChoose=onChoose)
